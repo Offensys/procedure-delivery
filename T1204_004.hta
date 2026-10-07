@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Offensys</title>
-<HTA:APPLICATION ID="OffensysApp" APPLICATIONNAME="Offensys" SCROLL="no" SINGLEINSTANCE="yes"/>
-</head>
-<body>
 <script language="VBScript">
-MsgBox "Successful Offensys Procedure Execution"
-Self.Close
+    Set wsh = CreateObject("WScript.Shell")
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    outPath = wsh.ExpandEnvironmentStrings("%TEMP%") & "\offensys_hta_executed.txt"
+    Set f = fso.CreateTextFile(outPath, True)
+    f.WriteLine "Successful Offensys Procedure Execution - " & Now
+    f.Close
+    Self.Close
 </script>
-</body>
-</html>
