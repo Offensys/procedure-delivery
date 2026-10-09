@@ -1,0 +1,48 @@
+# Publishes selected files as assets of one rolling release, so they are served
+# with Content-Type: application/octet-stream instead of raw.githubusercontent.com's text/plain.
+# Stable URL: https://github.com/Offensys/procedure-delivery/releases/latest/download/<file>
+name: Release assets
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: release-assets
+
+env:
+  TAG: delivery
+  # Space-separated git pathspecs. Add more types here, e.g. "*.hta *.lnk"
+  PATTERNS: "*.hta"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Sync release assets
+        run: |
+          set -euo pipefail
+          set -f  # pass PATTERNS to git unexpanded
+          mapfile -t files < <(git ls-files -- $PATTERNS)
+          set +f
+
+          gh release view "$TAG" >/dev/null 2>&1 ||
+            gh release create "$TAG" --latest --target "$GITHUB_SHA" \
+              --title "Delivery assets" --notes "Managed by .github/workflows/release-assets.yml. Do not edit by hand."
+
+          if [ ${#files[@]} -gt 0 ]; then
+            gh release upload "$TAG" "${files[@]}" --clobber
+          fi
+
+          # Remove assets whose source file no longer matches.
+          wanted=$(printf '%s\n' "${files[@]##*/}")
+          gh release view "$TAG" --json assets --jq '.assets[].name' | while read -r name; do
+            grep -qxF "$name" <<<"$wanted" || gh release delete-asset "$TAG" "$name" --yes
+          done
