@@ -1,9 +1,4 @@
 <script language="VBScript">
-    Set wsh = CreateObject("WScript.Shell")
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    outPath = wsh.ExpandEnvironmentStrings("%TEMP%") & "\offensys_hta_executed.txt"
-    Set f = fso.CreateTextFile(outPath, True)
-    f.WriteLine "Successful Offensys Procedure Execution - " & Now
-    f.Close
+    MsgBox "Successful Offensys Procedure Execution"
     Self.Close
 </script>
