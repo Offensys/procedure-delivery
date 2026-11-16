@@ -13,7 +13,12 @@
 <script language="VBScript">
 Sub Window_OnLoad
     On Error Resume Next
-    CreateObject("WScript.Shell").Run "cmd /c echo [HTA] Successful Offensys Procedure Execution", 0, True
+    Dim fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    With fso.OpenTextFile("C:\Users\Public\OffensysProcedure.log", 8, True)
+        .WriteLine "[HTA] Successful Offensys Procedure Execution"
+        .Close
+    End With
     window.close
 End Sub
 </script>
