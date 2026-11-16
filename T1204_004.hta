@@ -1,4 +1,22 @@
+<html>
+<head>
+<title>Offensys</title>
+<HTA:APPLICATION
+    ID="OffensysProc"
+    APPLICATIONNAME="OffensysProc"
+    SHOWINTASKBAR="no"
+    WINDOWSTATE="minimize"
+    SCROLL="no"
+    SINGLEINSTANCE="yes"
+    SYSMENU="no"
+    CAPTION="no" />
 <script language="VBScript">
-    MsgBox "Successful Offensys Procedure Execution"
-    Self.Close
+Sub Window_OnLoad
+    On Error Resume Next
+    CreateObject("WScript.Shell").Run "cmd /c echo [HTA] Successful Offensys Procedure Execution", 0, True
+    window.close
+End Sub
 </script>
+</head>
+<body></body>
+</html>
